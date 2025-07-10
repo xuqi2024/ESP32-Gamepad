@@ -5,7 +5,7 @@ idf_component_register(
     INCLUDE_DIRS "."
     REQUIRES 
         bt
-        esp_bt_bluedroid
+        esp_hid
         nvs_flash
         driver
         bluetooth_hid

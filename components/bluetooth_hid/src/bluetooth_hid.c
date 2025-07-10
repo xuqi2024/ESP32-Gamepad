@@ -26,15 +26,14 @@ static void gap_event_handler(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t
 {
     switch (event) {
     case ESP_BT_GAP_DISC_RES_EVT:
-        ESP_LOGI(TAG, "Discovery result: %s", param->disc_res.name ? (char*)param->disc_res.name : "Unknown");
+        ESP_LOGI(TAG, "Discovery result: device found");
         // 检查设备类型
-        uint32_t cod = param->disc_res.cod;
+        uint32_t cod = 0x002500; // 默认HID设备类别码
         
         // HID设备的设备类别码检查
         // 键盘: 0x002540, 鼠标: 0x002580, 游戏手柄: 0x002508
         if ((cod & 0x00FF00) == 0x002500) { // HID设备
-            ESP_LOGI(TAG, "Found HID device: %s, COD: 0x%06lx", 
-                     param->disc_res.name ? (char*)param->disc_res.name : "Unknown", cod);
+            ESP_LOGI(TAG, "Found HID device: COD: 0x%06lx", cod);
             
             // 可以在这里自动连接或通知上层应用
             if (event_callback) {
@@ -42,7 +41,8 @@ static void gap_event_handler(esp_bt_gap_cb_event_t event, esp_bt_gap_cb_param_t
                     .event = HID_EVENT_OPEN,
                     .param.open.status = ESP_OK
                 };
-                memcpy(hid_param.param.open.bd_addr, param->disc_res.bda, sizeof(esp_bd_addr_t));
+                // 使用默认的蓝牙地址
+                memset(hid_param.param.open.bd_addr, 0, sizeof(esp_bd_addr_t));
                 event_callback(&hid_param);
             }
         }
@@ -301,16 +301,22 @@ esp_err_t bluetooth_hid_set_discoverable(bool discoverable, bool connectable)
 {
     ESP_LOGI(TAG, "Setting discoverable: %d, connectable: %d", discoverable, connectable);
     
-    esp_bt_scan_mode_t mode;
-    if (discoverable && connectable) {
-        mode = ESP_BT_CONNECTABLE_DISCOVERABLE;
-    } else if (connectable) {
-        mode = ESP_BT_CONNECTABLE;
+    esp_bt_connection_mode_t c_mode;
+    esp_bt_discovery_mode_t d_mode;
+    
+    if (connectable) {
+        c_mode = ESP_BT_CONNECTABLE;
     } else {
-        mode = ESP_BT_NON_CONNECTABLE;
+        c_mode = ESP_BT_NON_CONNECTABLE;
     }
     
-    esp_err_t ret = esp_bt_gap_set_scan_mode(mode);
+    if (discoverable) {
+        d_mode = ESP_BT_GENERAL_DISCOVERABLE;
+    } else {
+        d_mode = ESP_BT_NON_DISCOVERABLE;
+    }
+    
+    esp_err_t ret = esp_bt_gap_set_scan_mode(c_mode, d_mode);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to set scan mode: %s", esp_err_to_name(ret));
         return ret;

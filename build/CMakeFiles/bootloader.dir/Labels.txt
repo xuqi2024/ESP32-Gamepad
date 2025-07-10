@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/Users/xuqi/Proj/ESP32-Gamepad/build/CMakeFiles/bootloader
+/Users/xuqi/Proj/ESP32-Gamepad/build/CMakeFiles/bootloader.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/CMakeFiles/bootloader-complete.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/Users/xuqi/Proj/ESP32-Gamepad/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

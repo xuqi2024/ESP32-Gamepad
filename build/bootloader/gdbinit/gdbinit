@@ -1,0 +1,2 @@
+source /Users/xuqi/Proj/ESP32-Gamepad/build/bootloader/gdbinit/symbols
+source /Users/xuqi/Proj/ESP32-Gamepad/build/bootloader/gdbinit/connect

@@ -769,7 +769,7 @@ static log_level_t config_parse_log_level(const char *str)
 /**
  * @brief 通知配置更新
  */
-static void config_notify_update(config_type_t type, const void *config)
+static void __attribute__((unused)) config_notify_update(config_type_t type, const void *config)
 {
     if (g_update_callback) {
         g_update_callback(type, config);

@@ -106,6 +106,12 @@ typedef struct {
     uint32_t cpu_utilization;           /**< CPU利用率(%) */
     uint32_t memory_usage;              /**< 内存使用量(字节) */
     uint32_t scheduler_overhead_us;     /**< 调度器开销(微秒) */
+    uint32_t total_executions;          /**< 总执行次数 */
+    uint32_t total_execution_time_ms;   /**< 总执行时间(毫秒) */
+    uint32_t avg_execution_time_ms;     /**< 平均执行时间(毫秒) */
+    uint32_t start_time;                /**< 启动时间 */
+    uint32_t uptime_ms;                 /**< 运行时间(毫秒) */
+    uint32_t total_tasks_created;       /**< 已创建任务总数 */
 } scheduler_stats_t;
 
 /* 调度器配置结构 */
@@ -146,6 +152,13 @@ esp_err_t task_scheduler_start(void);
  * @return esp_err_t ESP_OK成功，其他值失败
  */
 esp_err_t task_scheduler_stop(void);
+
+/**
+ * @brief 停止所有任务
+ * 
+ * @return esp_err_t ESP_OK成功，其他值失败
+ */
+esp_err_t task_scheduler_stop_all_tasks(void);
 
 /**
  * @brief 创建任务

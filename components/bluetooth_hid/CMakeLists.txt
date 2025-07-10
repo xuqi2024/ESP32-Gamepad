@@ -3,7 +3,7 @@ idf_component_register(
     INCLUDE_DIRS "include"
     REQUIRES 
         bt
-        esp_bt_bluedroid
+        esp_hid
         driver
         esp_timer
         esp_common

@@ -1,0 +1,65 @@
+[1/5] cd /Users/xuqi/Proj/ESP32-Gamepad/build/esp-idf/esptool_py && /Users/xuqi/.espressif/python_env/idf5.4_py3.13_env/bin/python /Users/xuqi/esp/v5.4.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /Users/xuqi/Proj/ESP32-Gamepad/build/partition_table/partition-table.bin /Users/xuqi/Proj/ESP32-Gamepad/build/esp32_gamepad.bin
+esp32_gamepad.bin binary size 0xa8c50 bytes. Smallest app partition is 0x100000 bytes. 0x573b0 bytes (34%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] cd /Users/xuqi/Proj/ESP32-Gamepad/build/bootloader/esp-idf/esptool_py && /Users/xuqi/.espressif/python_env/idf5.4_py3.13_env/bin/python /Users/xuqi/esp/v5.4.2/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /Users/xuqi/Proj/ESP32-Gamepad/build/bootloader/bootloader.bin
+Bootloader binary size 0x6570 bytes. 0xa90 bytes (9%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] cd /Users/xuqi/esp/v5.4.2/esp-idf/components/esptool_py && /opt/homebrew/bin/cmake -D IDF_PATH=/Users/xuqi/esp/v5.4.2/esp-idf -D "SERIAL_TOOL=/Users/xuqi/.espressif/python_env/idf5.4_py3.13_env/bin/python;;/Users/xuqi/esp/v5.4.2/esp-idf/components/esptool_py/esptool/esptool.py;--chip;esp32" -D "SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args" -D WORKING_DIRECTORY=/Users/xuqi/Proj/ESP32-Gamepad/build -P /Users/xuqi/esp/v5.4.2/esp-idf/components/esptool_py/run_serial_tool.cmake
+esptool.py --chip esp32 -p /dev/cu.usbserial-0001 -b 460800 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 40m --flash_size 4MB 0x1000 bootloader/bootloader.bin 0x10000 esp32_gamepad.bin 0x8000 partition_table/partition-table.bin
+esptool.py v4.9.0
+Serial port /dev/cu.usbserial-0001
+Connecting....
+Chip is ESP32-D0WD-V3 (revision v3.0)
+Features: WiFi, BT, Dual Core, 240MHz, VRef calibration in efuse, Coding Scheme None
+Crystal is 40MHz
+MAC: 94:b5:55:f8:88:4c
+Uploading stub...
+Running stub...
+Stub running...
+Changing baud rate to 460800
+Changed.
+Configuring flash size...
+Flash will be erased from 0x00001000 to 0x00007fff...
+Flash will be erased from 0x00010000 to 0x000b8fff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+SHA digest in image updated
+Compressed 25968 bytes to 16369...
+Writing at 0x00001000... (100 %)
+Wrote 25968 bytes (16369 compressed) at 0x00001000 in 0.9 seconds (effective 230.1 kbit/s)...
+Hash of data verified.
+Compressed 691280 bytes to 404032...
+Writing at 0x00010000... (4 %)
+Writing at 0x0001dec1... (8 %)
+Writing at 0x00029c9c... (12 %)
+Writing at 0x00033a3f... (16 %)
+Writing at 0x00039316... (20 %)
+Writing at 0x0003f478... (24 %)
+Writing at 0x00044d3a... (28 %)
+Writing at 0x0004b222... (32 %)
+Writing at 0x00050f01... (36 %)
+Writing at 0x00056fa5... (40 %)
+Writing at 0x0005cf74... (44 %)
+Writing at 0x00062d5b... (48 %)
+Writing at 0x0006896f... (52 %)
+Writing at 0x0006ec11... (56 %)
+Writing at 0x000748d1... (60 %)
+Writing at 0x0007a3f2... (64 %)
+Writing at 0x0007ff08... (68 %)
+Writing at 0x00085a73... (72 %)
+Writing at 0x0008b8d3... (76 %)
+Writing at 0x000954cd... (80 %)
+Writing at 0x0009c219... (84 %)
+Writing at 0x000a3391... (88 %)
+Writing at 0x000a8ee1... (92 %)
+Writing at 0x000ae78a... (96 %)
+Writing at 0x000b49b3... (100 %)
+Wrote 691280 bytes (404032 compressed) at 0x00010000 in 10.7 seconds (effective 519.0 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 103...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (103 compressed) at 0x00008000 in 0.1 seconds (effective 193.6 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...

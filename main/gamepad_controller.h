@@ -9,6 +9,7 @@
 #include "esp_err.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include "vibration.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,15 +66,6 @@ typedef struct {
     bool connected;          ///< 连接状态
     uint32_t last_update;    ///< 最后更新时间戳
 } gamepad_state_t;
-
-/**
- * @brief 震动参数结构体
- */
-typedef struct {
-    uint8_t left_motor;      ///< 左侧震动马达强度 (0-255)
-    uint8_t right_motor;     ///< 右侧震动马达强度 (0-255)
-    uint32_t duration_ms;    ///< 震动持续时间(毫秒)
-} vibration_params_t;
 
 /**
  * @brief 初始化游戏手柄控制器

@@ -13,9 +13,13 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
+#include <inttypes.h>
 #include <string.h>
 
 static const char *TAG = "GAMEPAD_CTRL";
+
+// 函数声明
+static void parse_gamepad_input(const uint8_t *data, uint16_t len);
 
 // 任务参数
 #define GAMEPAD_INPUT_TASK_STACK_SIZE   4096
@@ -491,9 +495,8 @@ esp_err_t gamepad_controller_vibrate(const vibration_params_t *params)
     if (params == NULL) {
         return ESP_ERR_INVALID_ARG;
     }
-    
-    ESP_LOGI(TAG, "Controller vibration request: left=%d, right=%d, duration=%lums", 
-             params->left_motor, params->right_motor, params->duration_ms);
+     ESP_LOGI(TAG, "Controller vibration request: left=%d, right=%d, duration=%"PRIu32"ms",
+             params->left_intensity, params->right_intensity, params->duration_ms);
     
     return vibration_start(params);
 }

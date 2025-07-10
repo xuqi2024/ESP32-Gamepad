@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <inttypes.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -39,15 +40,67 @@ static void system_init(void)
  */
 static void bluetooth_init(void)
 {
-    ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_BLE));
+    esp_err_t ret;
     
+    ESP_LOGI(TAG, "Starting Bluetooth initialization...");
+    
+    // ESP-IDF 5.4+ 蓝牙初始化：先尝试不释放内存
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_bt_controller_init(&bt_cfg));
-    ESP_ERROR_CHECK(esp_bt_controller_enable(ESP_BT_MODE_CLASSIC_BT));
-    ESP_ERROR_CHECK(esp_bluedroid_init());
-    ESP_ERROR_CHECK(esp_bluedroid_enable());
     
-    ESP_LOGI(TAG, "Bluetooth initialized");
+    ret = esp_bt_controller_init(&bt_cfg);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Bluetooth controller init failed: %s", esp_err_to_name(ret));
+        return;
+    }
+    ESP_LOGI(TAG, "Bluetooth controller initialized");
+    
+    // 尝试启用BTDM模式（双模式）
+    ret = esp_bt_controller_enable(ESP_BT_MODE_BTDM);
+    if (ret != ESP_OK) {
+        ESP_LOGW(TAG, "BTDM mode failed: %s, trying Classic BT only", esp_err_to_name(ret));
+        
+        // 如果BTDM失败，尝试释放BLE内存后使用经典蓝牙
+        esp_bt_controller_deinit();
+        
+        ret = esp_bt_controller_mem_release(ESP_BT_MODE_BLE);
+        if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
+            ESP_LOGW(TAG, "Failed to release BLE memory: %s", esp_err_to_name(ret));
+        }
+        
+        ret = esp_bt_controller_init(&bt_cfg);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Bluetooth controller re-init failed: %s", esp_err_to_name(ret));
+            return;
+        }
+        
+        ret = esp_bt_controller_enable(ESP_BT_MODE_CLASSIC_BT);
+        if (ret != ESP_OK) {
+            ESP_LOGE(TAG, "Classic BT enable failed: %s", esp_err_to_name(ret));
+            esp_bt_controller_deinit();
+            return;
+        }
+    }
+    ESP_LOGI(TAG, "Bluetooth controller enabled");
+    
+    ret = esp_bluedroid_init();
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Bluedroid init failed: %s", esp_err_to_name(ret));
+        esp_bt_controller_disable();
+        esp_bt_controller_deinit();
+        return;
+    }
+    ESP_LOGI(TAG, "Bluedroid initialized");
+    
+    ret = esp_bluedroid_enable();
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Bluedroid enable failed: %s", esp_err_to_name(ret));
+        esp_bluedroid_deinit();
+        esp_bt_controller_disable();
+        esp_bt_controller_deinit();
+        return;
+    }
+    
+    ESP_LOGI(TAG, "Bluetooth initialized successfully");
 }
 
 /**
@@ -76,7 +129,7 @@ void app_main(void)
     // 主循环
     while (1) {
         // 系统心跳
-        ESP_LOGI(TAG, "System running... Free heap: %d bytes", esp_get_free_heap_size());
+        ESP_LOGI(TAG, "System running... Free heap: %"PRIu32" bytes", esp_get_free_heap_size());
         vTaskDelay(pdMS_TO_TICKS(10000)); // 10秒心跳
     }
 }
